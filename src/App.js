@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-import data from "./assests/data/recipe.json";
 import Search from "./components/searchPage/Search.js";
 
 
