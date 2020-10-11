@@ -1,5 +1,5 @@
 import React from "react";
-import "./Product.css"
+import "./Recipe.css"
 
 function Recipe(props){
 

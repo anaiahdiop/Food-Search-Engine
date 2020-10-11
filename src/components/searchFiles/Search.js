@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import recipeData from "../../assests/data/recipe.json"
-import Recipe from "../resultPage/Recipe.js"
+import Recipe from "../recipeFiles/Recipe.js"
+import Category from "./Category.js"
 
 
 const recipesArr = recipeData.recipes
@@ -20,20 +21,22 @@ class Search extends Component{
             nameSelected: null, //Name radio box 
             ingredientSelected: null, // ingredient radio box
         };
-        this._handleSearchClick = this._handleSearchClick.bind(this)
-        this._handleNameClick = this._handleNameClick.bind(this)
-        this._handleIngredientClick = this._handleIngredientClick.bind(this)
+        this._handleSearchClick = this._handleSearchClick.bind(this);
+        this._handleNameClick = this._handleNameClick.bind(this);
+        this._handleIngredientClick = this._handleIngredientClick.bind(this);
         this._handleChange = this._handleChange.bind(this);  
         //all callbacks are invoked function style, -> context will be global context so we need to make sure we bind the context to THIS specifcally 
         //all event listeners should be binded in constructors
         //if not binded the event wont be able to recongnize "this"
     }
 
+    // Methods
+
     _handleAdvancedClick(){
 
     }
 
-    // Methods
+    
     _handleSearchClick(){ 
         this.setState((previousState) => {// this.setState: a method that takes a function
             return{
@@ -132,6 +135,7 @@ class Search extends Component{
                     <label htmlFor="Ingredient">Ingredient</label>
                 <button onClick={this._handleSearchClick}>Search!</button>
                 <button onClick={this._handleAdvancedClick}>Advanced</button>
+                <Category test={this.state.entree}/>
                 {this.state.data}
             </div>
 

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
-import Search from "./components/searchPage/Search.js";
+import Category from './components/searchFiles/Category';
+import Search from "./components/searchFiles/Search.js";
 
 
 
