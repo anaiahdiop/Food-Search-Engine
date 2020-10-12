@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import Category from './components/searchFiles/Category';
 import Search from "./components/searchFiles/Search.js";
+import Style from "./components/recipeFiles/Recipe.css"
 
 
 

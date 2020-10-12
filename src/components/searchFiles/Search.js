@@ -2,10 +2,12 @@ import React, {Component} from "react";
 import recipeData from "../../assests/data/recipe.json"
 import Recipe from "../recipeFiles/Recipe.js"
 import Category from "./Category.js"
-
+import Style from "../recipeFiles/Recipe.css"
 
 const recipesArr = recipeData.recipes
 let resultList = []
+let categoryList = []
+let onlyCategoryList = []
 
 class Search extends Component{
 
@@ -13,18 +15,31 @@ class Search extends Component{
     constructor(props){ 
         super(props);
         this.state = {
+            appetizer: false,
+            entree: false,
+            dessert: false,
+            lowTime:false,
+            middleTime:false,
+            highTime:false,
             hidden:null,
             visible:null,
             searched: true, // this is my search button state: needs to be true to work on first try??
             data: [], // this is my displayed result state
             inputValue: null, // what is inputed in the text box
-            nameSelected: null, //Name radio box 
-            ingredientSelected: null, // ingredient radio box
+            nameSelected: true, //Name radio box 
+            ingredientSelected: false, // ingredient radio box
         };
+        this._handleLowTimeClick = this._handleLowTimeClick.bind(this);
+        this._handleMiddleTimeClick = this._handleMiddleTimeClick.bind(this);
+        this._handleHighTimeClick = this._handleHighTimeClick.bind(this);
+        this._handleAppetizerClick = this._handleAppetizerClick.bind(this);
+        this._handleEntreeClick = this._handleEntreeClick.bind(this);
+        this._handleDessertClick = this._handleDessertClick.bind(this);
         this._handleSearchClick = this._handleSearchClick.bind(this);
         this._handleNameClick = this._handleNameClick.bind(this);
         this._handleIngredientClick = this._handleIngredientClick.bind(this);
         this._handleChange = this._handleChange.bind(this);  
+        //this.filterCategory = this.filterCategory.bind(this);
         //all callbacks are invoked function style, -> context will be global context so we need to make sure we bind the context to THIS specifcally 
         //all event listeners should be binded in constructors
         //if not binded the event wont be able to recongnize "this"
@@ -35,8 +50,55 @@ class Search extends Component{
     _handleAdvancedClick(){
 
     }
+    //Time Selection 
+    _handleLowTimeClick(){
+        this.setState((previousState) =>{
+            return{
+                lowTime:!previousState.lowTime
+            } 
+        });
+    }
 
+    _handleMiddleTimeClick(){
+        this.setState((previousState) =>{
+            return{
+                middleTime:!previousState.middleTime
+            } 
+        });
+    }
+
+    _handleHighTimeClick(){
+        this.setState((previousState) =>{
+            return{
+                highTime:!previousState.highTime
+            } 
+        });
+    }
+
+    //Category Seelection
+    _handleAppetizerClick(){
+        this.setState((previousState) =>{
+            return{
+                appetizer:!previousState.appetizer,
+            } 
+        });
+    }
+
+    _handleEntreeClick(){
+        this.setState((previousState) =>{
+            return{
+                entree: !previousState.entree,
+            } 
+        });
+    }
     
+    _handleDessertClick(){
+        this.setState((previousState) =>{
+            return{
+                dessert: !previousState.dessert,
+            }   
+        });
+    }
     _handleSearchClick(){ 
         this.setState((previousState) => {// this.setState: a method that takes a function
             return{
@@ -54,7 +116,6 @@ class Search extends Component{
                 nameSelected: true,
                 ingredientSelected: false,
             }
-            
         });
     }
 
@@ -74,34 +135,112 @@ class Search extends Component{
         );
     }
 
-    filterName(){
-
-        if(this.state.nameSelected && this.state.searched){ 
-            recipesArr.forEach(r =>{
-                if(r.title.toLowerCase().includes(this.state.inputValue.toLowerCase())){
-                    resultList.push(r);
+    filterCategory(){
+        if(this.state.searched && this.state.appetizer){
+            resultList.forEach(r => {
+                if((!categoryList.includes(r) && r.recipeCategory) === "Appetizer"){
+                    categoryList.push(r)
+                    
                 }
-            return(resultList)
-            })
+            });
+        }      
+        if(this.state.searched && this.state.entree){
+            resultList.forEach(r => {
+                if((!categoryList.includes(r) && r.recipeCategory) === "Entree"){
+                    categoryList.push(r)
+                    
+                }
+            });
+        } 
+        if(this.state.searched && this.state.dessert){
+            resultList.forEach(r => {
+                if((!categoryList.includes(r) && r.recipeCategory) === "Dessert"){
+                    categoryList.push(r)
+                    
+                }
+            });
+        }
+        console.log(resultList)
+        
+
+        if(this.state.appetizer || this.state.entree || this.state.dessert){
+            resultList = categoryList
+            return(resultList);
+        }
+        else{
+            console.log(categoryList)
+            return(resultList);
+        }
+    }     
+
+
+    filterName(){
+        if(this.state.inputValue === null){
+            this.filterOnlyCategory()
+        }
+        else{
+            if(this.state.nameSelected && this.state.searched){ 
+                recipesArr.forEach(r =>{
+                    if(r.title.toLowerCase().includes(this.state.inputValue.toLowerCase())){
+                        resultList.push(r);
+                    }
+                return(resultList);
+                })
+                this.filterCategory()
+            }
         }
     }
 
     filterIngredient(){
-
-        if(this.state.ingredientSelected && this.state.searched){ 
-            recipesArr.forEach(r =>{
-                r.ingredients.forEach( ingredient =>{
-                    if(ingredient.toLowerCase().includes(this.state.inputValue.toLowerCase())){
-                        resultList.push(r);
-                    }
-                return(resultList)
-                }
-                    
+        if(this.state.inputValue === null){
+            this.filterOnlyCategory()
+        }
+        else{
+            if(this.state.ingredientSelected && this.state.searched){ 
+                recipesArr.forEach(r =>{
+                    r.ingredients.forEach( ingredient =>{
+                        if(!resultList.includes(r) && ingredient.toLowerCase().includes(this.state.inputValue.toLowerCase())){
+                            resultList.push(r);
+                        }
+                        return(resultList);
+                    }    
                 )
             })
+            this.filterCategory()
+            }
         }
     }
 
+    filterOnlyCategory(){
+        if(this.state.inputValue === null){
+
+            if(this.state.searched&& this.state.appetizer){
+                recipesArr.forEach(r => {
+                    if((!onlyCategoryList.includes(r) && r.recipeCategory) === "Appetizer"){
+                        onlyCategoryList.push(r)
+                    }
+                });
+            }      
+            if(this.state.searched&& this.state.entree){
+                recipesArr.forEach(r => {
+                    if((!onlyCategoryList.includes(r) && r.recipeCategory) === "Entree"){
+                        onlyCategoryList.push(r)
+                    }
+                });       
+            }
+
+            if(this.state.searched && this.state.dessert){
+                recipesArr.forEach(r => {
+                    if((!onlyCategoryList.includes(r) && r.recipeCategory) == "Dessert"){
+                        onlyCategoryList.push(r)
+                    }
+                });
+            }
+            resultList = onlyCategoryList
+            return(resultList);
+        }
+    }
+    
     displayResults(){
         const listDisplay = resultList.map(r =>{
             // for each product i want product component based on data
@@ -112,30 +251,58 @@ class Search extends Component{
           this.setState((previousState) =>{
               return{
                 data:listDisplay,
-                searched: !previousState.searched
+                searched: !previousState.searched,
               }
             }
           )
         if(resultList.length === 0){
             this.setState(
-                {data: ["No results search again"]}
+                {data: ["No results search again"],
+            }
+
             )
         }
         resultList = []
+        categoryList=[]
+        onlyCategoryList = []
     }
 
     render(){ //displayes new html elements
+        //console.log(this.state.appetizer)
+        //console.log(this.state.entree)
+        //console.log(this.state.dessert)
         return(
-            <div className="searchCriteria">
+            <div className="App">
 
                 <input type = "text" value = {this.state.inputValue} placeholder = "Search For..." onChange = {this._handleChange}></input>
-                <input type = "radio" value = {this.state.nameSelected} name="categories" id="Name" onClick = {this._handleNameClick}></input>
+                <input type = "radio" value = {this.state.nameSelected} name="categories" id="Name" onClick = {this._handleNameClick} defaultChecked></input>
                     <label htmlFor="Name">Name</label>
                 <input type = "radio" value = {this.state.ingredientSelected} name="categories" id="Ingredient" onClick = {this._handleIngredientClick}></input>
                     <label htmlFor="Ingredient">Ingredient</label>
                 <button onClick={this._handleSearchClick}>Search!</button>
                 <button onClick={this._handleAdvancedClick}>Advanced</button>
-                <Category test={this.state.entree}/>
+                <Category 
+                    option1="appetizer"
+                    option2="entree"
+                    option3="dessert"
+                    state1={this.state.appetizer}
+                    state2={this.state.entree}
+                    state3={this.state.dessert}
+                    click1={this._handleAppetizerClick}
+                    click2={this._handleEntreeClick}
+                    click3={this._handleDessertClick}
+                />
+                <Category 
+                    option1="1-30"
+                    option2="31-60"
+                    option3="Over an hour"
+                    state1={this.state.lowTime}
+                    state2={this.state.middleTime}
+                    state3={this.state.highTime}
+                    click1={this._handleLowTimeClick}
+                    click2={this._handleMiddleTimeClick}
+                    click3={this._handleHighTimeClick}
+                />
                 {this.state.data}
             </div>
 
@@ -146,3 +313,32 @@ class Search extends Component{
 
 
 export default Search;
+
+/*
+else{
+    resultList.forEach(r => {
+        if((!categoryList.includes(r) && r.recipeCategory) === "Appetizer"){
+            categoryList.push(r)
+        }
+    });
+}
+
+
+else{
+    resultList.forEach(r => {
+    if((!categoryList.includes(r) && r.recipeCategory) === "Entree"){
+        categoryList.push(r)
+    }
+});}
+
+else{
+    resultList.forEach(r => {
+        if((!resultList.includes(r) && r.recipeCategory) === "Dessert"){
+            categoryList.push(r)
+        }
+    });
+}
+
+*/
+
+
