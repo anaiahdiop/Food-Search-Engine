@@ -8,6 +8,8 @@ const recipesArr = recipeData.recipes
 let resultList = []
 let categoryList = []
 let onlyCategoryList = []
+let onlyTimeList = []
+let timeList = []
 
 class Search extends Component{
 
@@ -21,8 +23,8 @@ class Search extends Component{
             lowTime:false,
             middleTime:false,
             highTime:false,
-            hidden:null,
-            visible:null,
+            visibility:true,
+            hidden: "hidden",
             searched: true, // this is my search button state: needs to be true to work on first try??
             data: [], // this is my displayed result state
             inputValue: null, // what is inputed in the text box
@@ -38,6 +40,7 @@ class Search extends Component{
         this._handleSearchClick = this._handleSearchClick.bind(this);
         this._handleNameClick = this._handleNameClick.bind(this);
         this._handleIngredientClick = this._handleIngredientClick.bind(this);
+        this._handleAdvancedClick = this._handleAdvancedClick.bind(this);
         this._handleChange = this._handleChange.bind(this);  
         //this.filterCategory = this.filterCategory.bind(this);
         //all callbacks are invoked function style, -> context will be global context so we need to make sure we bind the context to THIS specifcally 
@@ -48,7 +51,21 @@ class Search extends Component{
     // Methods
 
     _handleAdvancedClick(){
-
+        this.setState((previousState) =>{
+            return{
+                visibility:!previousState.visibility,
+            } 
+        });
+        if(!this.state.visibility){
+            this.setState(
+                {hidden:"hidden"}
+            )
+        }
+        else{
+            this.setState(
+                {hidden:""}
+            )
+        }
     }
     //Time Selection 
     _handleLowTimeClick(){
@@ -105,6 +122,10 @@ class Search extends Component{
                 searched: !previousState.searched
             }
         });
+
+        console.log(this.state.lowTime)
+        console.log(this.state.middleTime)
+        console.log(this.state.highTime)
         this.filterName()
         this.filterIngredient() // console.log(e) <- interesting
         this.displayResults()
@@ -159,16 +180,40 @@ class Search extends Component{
                     
                 }
             });
-        }
-        console.log(resultList)
-        
+        } 
 
-        if(this.state.appetizer || this.state.entree || this.state.dessert){
-            resultList = categoryList
+        if(this.state.searched && this.state.lowTime){
+            resultList.forEach(r => {
+                if((!timeList.includes(r) && (0 <= r.prepTime && r.prepTime <= 30))){
+                    timeList.push(r)
+                    
+                }
+            });
+        } 
+        
+        if(this.state.searched && this.state.MiddleTime){
+            resultList.forEach(r => {
+                if((!timeList.includes(r) && (31 <= r.prepTime && r.prepTime <= 60))){
+                    timeList.push(r)
+                    
+                }
+            });
+        }
+
+
+        if(this.state.searched && this.state.HightTime){
+            resultList.forEach(r => {
+                if((!timeList.includes(r) && (r.prepTime >= 61))){
+                    timeList.push(r)   
+                }
+            });
+        }
+
+        if(this.state.appetizer || this.state.entree || this.state.dessert || this.state.lowTime || this.state.MiddleTime || this.state.HightTime){
+            resultList = categoryList.filter(value => timeList.includes(value))
             return(resultList);
         }
         else{
-            console.log(categoryList)
             return(resultList);
         }
     }     
@@ -236,7 +281,33 @@ class Search extends Component{
                     }
                 });
             }
-            resultList = onlyCategoryList
+            if(this.state.searched && this.state.lowTime){
+                recipesArr.forEach(r => {
+                    if((!onlyCategoryList.includes(r) && (0 <= r.prepTime && r.prepTime <= 30))){
+                        onlyTimeList.push(r)
+                        
+                    }
+                });
+            } 
+            
+            if(this.state.searched && this.state.MiddleTime){
+                recipesArr.forEach(r => {
+                    if((!onlyCategoryList.includes(r) && (31 <= r.prepTime && r.prepTime <= 60))){
+                        onlyTimeList.push(r)
+                        
+                    }
+                });
+            }
+    
+            if(this.state.searched && this.state.HightTime){
+                recipesArr.forEach(r => {
+                    if((!categoryList.includes(r) && (r.prepTime >= 61))){
+                        onlyTimeList.push(r)   
+                    }
+                });
+            }
+            resultList = onlyCategoryList.filter(value => onlyTimeList.includes(value))
+            console.log(resultList)
             return(resultList);
         }
     }
@@ -268,9 +339,9 @@ class Search extends Component{
     }
 
     render(){ //displayes new html elements
-        //console.log(this.state.appetizer)
-        //console.log(this.state.entree)
-        //console.log(this.state.dessert)
+        //console.log(this.state.lowTime)
+        //console.log(this.state.middleTime)
+        //console.log(this.state.highTime)
         return(
             <div className="App">
 
@@ -281,7 +352,8 @@ class Search extends Component{
                     <label htmlFor="Ingredient">Ingredient</label>
                 <button onClick={this._handleSearchClick}>Search!</button>
                 <button onClick={this._handleAdvancedClick}>Advanced</button>
-                <Category 
+                <Category
+                    class={this.state.hidden}
                     option1="appetizer"
                     option2="entree"
                     option3="dessert"
@@ -293,6 +365,7 @@ class Search extends Component{
                     click3={this._handleDessertClick}
                 />
                 <Category 
+                    class={this.state.hidden}
                     option1="1-30"
                     option2="31-60"
                     option3="Over an hour"
@@ -313,32 +386,5 @@ class Search extends Component{
 
 
 export default Search;
-
-/*
-else{
-    resultList.forEach(r => {
-        if((!categoryList.includes(r) && r.recipeCategory) === "Appetizer"){
-            categoryList.push(r)
-        }
-    });
-}
-
-
-else{
-    resultList.forEach(r => {
-    if((!categoryList.includes(r) && r.recipeCategory) === "Entree"){
-        categoryList.push(r)
-    }
-});}
-
-else{
-    resultList.forEach(r => {
-        if((!resultList.includes(r) && r.recipeCategory) === "Dessert"){
-            categoryList.push(r)
-        }
-    });
-}
-
-*/
 
 

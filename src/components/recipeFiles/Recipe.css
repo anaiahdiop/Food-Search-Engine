@@ -28,6 +28,9 @@ img {
     text-align: center;
 }
 
+.hidden{
+    display: none;
+}
 .product {
     flex: 1;
     padding: 20px;
