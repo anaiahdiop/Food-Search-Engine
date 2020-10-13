@@ -1,13 +1,35 @@
+body {
+    background-color: rgb(173, 218, 255);
+ }
 
+h1 {
+    padding-top: 70px;
+    font-size: 48px;
+    text-align: center;
+    font-family: serif;
+}
 
-.product p{
+#filters {
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    padding-bottom: 20px;
+}
+
+#searchButton {
+    padding-left: 20px;
+}
+
+.product p {
     font-family: Georgia, 'Times New Roman', Times, serif;
     color: rgb(73, 84, 95);
 }
 
 img {
-    width: 450px;
-    height: 450px;
+    width: 400px;
+    height: 400px;
     object-fit: cover;
     border-style: solid;
     border-color: snow;
@@ -15,34 +37,64 @@ img {
     justify-items: center;
 }
 
+.hidden{
+    display: none;
+}
 
 .App {
     display: flex;
     align-items: stretch;
+    /* justify-content: space-around; */
+    flex-flow: row wrap;
+    top: 200px;
+  }
+
+.everything {
+    margin: auto;
+}
+
+.resultContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /*
+    align-items: stretch;
     justify-content: space-around;
     flex-flow: row wrap;
-  }
+    top: 200px;*/
+}
+
 
 .App h3{
     font-size: 20px;
     text-align: center;
 }
 
-.hidden{
-    display: none;
-}
 .product {
     flex: 1;
     padding: 20px;
     padding-top: 40px;
-    /* padding-left: 100px; */
     border-style: solid;
     border-width: 1px;
     border-color: rgb(90, 90, 90);
     margin: 10px;
-    background-color: rgb(216, 205, 187);
+    background-color: rgb(236, 236, 236);
     position: relative;
   }
+
+button {
+    font-size: 16px;
+}
+
+#advanced {
+    padding-bottom: 40px;
+    padding-top: 20px;
+}
+.searching {
+    align-items: center;
+    margin: auto;
+    padding-top: 70px;
+}
 
 @media(min-width: 768px){
     img{
@@ -54,6 +106,12 @@ img {
     .product div{
         min-width: 600px;
     }
+    .container {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    
 }
 
 @media(min-width: 993px){
@@ -62,5 +120,12 @@ img {
         height: 250px;
         object-fit: cover;
         justify-items: center;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 20px;
     }
 }

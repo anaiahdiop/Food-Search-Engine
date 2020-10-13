@@ -9,20 +9,19 @@ class Category extends Component{
     
      render(){
          return(
-             <div className={this.props.class}>
-                <input type="checkbox" id={this.props.option1} name={this.props.option1} value={this.props.state1} onClick={this.props.click1}></input>
-                    <label htmlFor={this.props.option1}>{this.props.option1}</label>
+            <div className={this.props.class}>
+            <div>
+            <h3> {this.props.searchCategory} </h3>
+            <input type="checkbox" id={this.props.option1} name={this.props.option1} value={this.props.state1} onClick={this.props.click1}></input>
+                <label htmlFor={this.props.option1}>{this.props.option1}</label>
 
-                <input type="checkbox" id={this.props.option2} name={this.props.option2} value={this.props.state2}  onClick={this.props.click2}></input>
-                    <label htmlFor={this.props.option2}>{this.props.option2}</label>
+            <input type="checkbox" id={this.props.option2} name={this.props.option2} value={this.props.state2}  onClick={this.props.click2}></input>
+                <label htmlFor={this.props.option2}>{this.props.option2}</label>
 
-                <input type="checkbox" id={this.props.option3} name={this.props.option3} value={this.props.state3}  onClick={this.props.click3}></input>
-                    <label htmlFor={this.props.option3}>{this.props.option3}</label>
-             </div>
-
-
-        
-
+            <input type="checkbox" id={this.props.option3} name={this.props.option3} value={this.props.state3}  onClick={this.props.click3}></input>
+                <label htmlFor={this.props.option3}>{this.props.option3}</label>
+            </div>
+         </div>
 
          );
      }

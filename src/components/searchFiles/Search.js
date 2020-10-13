@@ -2,13 +2,13 @@ import React, {Component} from "react";
 import recipeData from "../../assests/data/recipe.json"
 import Recipe from "../recipeFiles/Recipe.js"
 import Category from "./Category.js"
-import Style from "../recipeFiles/Recipe.css"
+
+
+
 
 const recipesArr = recipeData.recipes
 let resultList = []
 let categoryList = []
-let onlyCategoryList = []
-let onlyTimeList = []
 let timeList = []
 
 class Search extends Component{
@@ -71,7 +71,7 @@ class Search extends Component{
     _handleLowTimeClick(){
         this.setState((previousState) =>{
             return{
-                lowTime:!previousState.lowTime
+                lowTime:!previousState.lowTime,
             } 
         });
     }
@@ -79,7 +79,7 @@ class Search extends Component{
     _handleMiddleTimeClick(){
         this.setState((previousState) =>{
             return{
-                middleTime:!previousState.middleTime
+                middleTime:!previousState.middleTime,
             } 
         });
     }
@@ -87,7 +87,7 @@ class Search extends Component{
     _handleHighTimeClick(){
         this.setState((previousState) =>{
             return{
-                highTime:!previousState.highTime
+                highTime:!previousState.highTime,
             } 
         });
     }
@@ -123,9 +123,6 @@ class Search extends Component{
             }
         });
 
-        console.log(this.state.lowTime)
-        console.log(this.state.middleTime)
-        console.log(this.state.highTime)
         this.filterName()
         this.filterIngredient() // console.log(e) <- interesting
         this.displayResults()
@@ -182,6 +179,13 @@ class Search extends Component{
             });
         } 
 
+        
+        return(categoryList);
+        
+    }     
+
+    filterTime(){
+        console.log(resultList)
         if(this.state.searched && this.state.lowTime){
             resultList.forEach(r => {
                 if((!timeList.includes(r) && (0 <= r.prepTime && r.prepTime <= 30))){
@@ -191,7 +195,7 @@ class Search extends Component{
             });
         } 
         
-        if(this.state.searched && this.state.MiddleTime){
+        if(this.state.searched && this.state.middleTime){
             resultList.forEach(r => {
                 if((!timeList.includes(r) && (31 <= r.prepTime && r.prepTime <= 60))){
                     timeList.push(r)
@@ -201,7 +205,7 @@ class Search extends Component{
         }
 
 
-        if(this.state.searched && this.state.HightTime){
+        if(this.state.searched && this.state.highTime){
             resultList.forEach(r => {
                 if((!timeList.includes(r) && (r.prepTime >= 61))){
                     timeList.push(r)   
@@ -209,19 +213,16 @@ class Search extends Component{
             });
         }
 
-        if(this.state.appetizer || this.state.entree || this.state.dessert || this.state.lowTime || this.state.MiddleTime || this.state.HightTime){
-            resultList = categoryList.filter(value => timeList.includes(value))
-            return(resultList);
-        }
-        else{
-            return(resultList);
-        }
-    }     
+        
+        return(timeList);
 
+    }
 
     filterName(){
         if(this.state.inputValue === null){
             this.filterOnlyCategory()
+            this.filterOnlyTime()
+            this.compareSelected()
         }
         else{
             if(this.state.nameSelected && this.state.searched){ 
@@ -231,7 +232,11 @@ class Search extends Component{
                     }
                 return(resultList);
                 })
+            if(this.state.appetizer || this.state.entree || this.state.dessert || this.state.lowTime || this.state.middleTime || this.state.highTime){
                 this.filterCategory()
+                this.filterTime()
+                this.compareSelected()
+                }
             }
         }
     }
@@ -239,6 +244,8 @@ class Search extends Component{
     filterIngredient(){
         if(this.state.inputValue === null){
             this.filterOnlyCategory()
+            this.filterOnlyTime()
+            this.compareSelected()
         }
         else{
             if(this.state.ingredientSelected && this.state.searched){ 
@@ -248,70 +255,91 @@ class Search extends Component{
                             resultList.push(r);
                         }
                         return(resultList);
-                    }    
-                )
+                    })
             })
-            this.filterCategory()
+            if(this.state.appetizer || this.state.entree || this.state.dessert || this.state.lowTime || this.state.middleTime || this.state.highTime){
+                this.filterCategory()
+                this.filterTime()
+                this.compareSelected()
+                }
             }
         }
     }
 
     filterOnlyCategory(){
-        if(this.state.inputValue === null){
+        if(this.state.inputValue == null){
 
             if(this.state.searched&& this.state.appetizer){
                 recipesArr.forEach(r => {
-                    if((!onlyCategoryList.includes(r) && r.recipeCategory) === "Appetizer"){
-                        onlyCategoryList.push(r)
+                    if((!categoryList.includes(r) && r.recipeCategory) === "Appetizer"){
+                        categoryList.push(r)
                     }
                 });
             }      
             if(this.state.searched&& this.state.entree){
                 recipesArr.forEach(r => {
-                    if((!onlyCategoryList.includes(r) && r.recipeCategory) === "Entree"){
-                        onlyCategoryList.push(r)
+                    if((!categoryList.includes(r) && r.recipeCategory) === "Entree"){
+                        categoryList.push(r)
                     }
                 });       
             }
 
             if(this.state.searched && this.state.dessert){
                 recipesArr.forEach(r => {
-                    if((!onlyCategoryList.includes(r) && r.recipeCategory) == "Dessert"){
-                        onlyCategoryList.push(r)
+                    if((!categoryList.includes(r) && r.recipeCategory) == "Dessert"){
+                        categoryList.push(r)
                     }
                 });
-            }
+            }            
+            return(categoryList);
+        }
+    }
+
+    filterOnlyTime(){
+        if(this.state.inputValue == null){
             if(this.state.searched && this.state.lowTime){
                 recipesArr.forEach(r => {
-                    if((!onlyCategoryList.includes(r) && (0 <= r.prepTime && r.prepTime <= 30))){
-                        onlyTimeList.push(r)
+                    console.log(r.prepTime)
+                    if((!timeList.includes(r)) && (0 <= r.prepTime && r.prepTime <= 30)){
+                        timeList.push(r)
                         
                     }
                 });
             } 
-            
-            if(this.state.searched && this.state.MiddleTime){
+            if(this.state.searched && this.state.middleTime){
                 recipesArr.forEach(r => {
-                    if((!onlyCategoryList.includes(r) && (31 <= r.prepTime && r.prepTime <= 60))){
-                        onlyTimeList.push(r)
-                        
+                    console.log(r.prepTime)
+                    if((!timeList.includes(r)) && (r.prepTime >= 31) && (r.prepTime <= 60)){
+                        timeList.push(r)
+                
                     }
                 });
             }
     
-            if(this.state.searched && this.state.HightTime){
+            if(this.state.searched && this.state.highTime){
                 recipesArr.forEach(r => {
-                    if((!categoryList.includes(r) && (r.prepTime >= 61))){
-                        onlyTimeList.push(r)   
+                    if((!timeList.includes(r)) && (r.prepTime >= 61)){
+                        timeList.push(r)   
                     }
                 });
             }
-            resultList = onlyCategoryList.filter(value => onlyTimeList.includes(value))
-            console.log(resultList)
-            return(resultList);
+            return(timeList);
         }
     }
     
+    compareSelected(){ //comparing time and category lists
+
+        if((!this.state.appetizer && !this.state.entree && !this.state.dessert) && (timeList.length > 0)){
+            categoryList = timeList
+        }
+
+        if((!this.state.lowTime && !this.state.middleTime && !this.state.highTime) && (categoryList.length > 0)){
+            timeList = categoryList
+        }
+        
+        resultList = categoryList.filter(r => timeList.includes(r)); // to get rid of repeats
+        return(resultList)
+    }
     displayResults(){
         const listDisplay = resultList.map(r =>{
             // for each product i want product component based on data
@@ -334,8 +362,9 @@ class Search extends Component{
             )
         }
         resultList = []
-        categoryList=[]
-        onlyCategoryList = []
+        categoryList =[]
+        timeList = []
+
     }
 
     render(){ //displayes new html elements
@@ -343,42 +372,55 @@ class Search extends Component{
         //console.log(this.state.middleTime)
         //console.log(this.state.highTime)
         return(
-            <div className="App">
 
-                <input type = "text" value = {this.state.inputValue} placeholder = "Search For..." onChange = {this._handleChange}></input>
-                <input type = "radio" value = {this.state.nameSelected} name="categories" id="Name" onClick = {this._handleNameClick} defaultChecked></input>
-                    <label htmlFor="Name">Name</label>
-                <input type = "radio" value = {this.state.ingredientSelected} name="categories" id="Ingredient" onClick = {this._handleIngredientClick}></input>
-                    <label htmlFor="Ingredient">Ingredient</label>
-                <button onClick={this._handleSearchClick}>Search!</button>
-                <button onClick={this._handleAdvancedClick}>Advanced</button>
-                <Category
-                    class={this.state.hidden}
-                    option1="appetizer"
-                    option2="entree"
-                    option3="dessert"
-                    state1={this.state.appetizer}
-                    state2={this.state.entree}
-                    state3={this.state.dessert}
-                    click1={this._handleAppetizerClick}
-                    click2={this._handleEntreeClick}
-                    click3={this._handleDessertClick}
-                />
-                <Category 
-                    class={this.state.hidden}
-                    option1="1-30"
-                    option2="31-60"
-                    option3="Over an hour"
-                    state1={this.state.lowTime}
-                    state2={this.state.middleTime}
-                    state3={this.state.highTime}
-                    click1={this._handleLowTimeClick}
-                    click2={this._handleMiddleTimeClick}
-                    click3={this._handleHighTimeClick}
-                />
-                {this.state.data}
+            <div className="everything">
+                <h1>Recipe Search Engine</h1>
+                <div className="searching" id="filters">
+                    <input type = "text" value = {this.state.inputValue} placeholder = "Search for recipes..." style={{ height:"20px"}, { width:"200px"}, { fontSize: "14px"}} onChange = {this._handleChange}></input>
+                    <input type = "radio" value = {this.state.nameSelected} name="categories" id="Name" onClick = {this._handleNameClick} defaultChecked></input>
+                        <label htmlFor="Name">Name</label>
+                    <input type = "radio" value = {this.state.ingredientSelected} name="categories" id="Ingredient" onClick = {this._handleIngredientClick}></input>
+                        <label htmlFor="Ingredient">Ingredient</label>
+                    <div id="searchButton">
+                        <button onClick={this._handleSearchClick}>Search!</button>
+                    </div>
+                </div>
+                <div className="searching" id="advanced">
+                    <button onClick={this._handleAdvancedClick}>Advanced</button>
+                </div>
+                <div className="container">
+                        <Category
+                            class={this.state.hidden}
+                            option1="appetizer"
+                            option2="entree"
+                            option3="dessert"
+                            state1={this.state.appetizer}
+                            state2={this.state.entree}
+                            state3={this.state.dessert}
+                            click1={this._handleAppetizerClick}
+                            click2={this._handleEntreeClick}
+                            click3={this._handleDessertClick}
+                            searchCategory = "Recipe Category"
+                        />
+                        <Category 
+                            class={this.state.hidden}
+                            option1="1-30"
+                            option2="31-60"
+                            option3="Over an hour"
+                            state1={this.state.lowTime}
+                            state2={this.state.middleTime}
+                            state3={this.state.highTime}
+                            click1={this._handleLowTimeClick}
+                            click2={this._handleMiddleTimeClick}
+                            click3={this._handleHighTimeClick}
+                            searchCategory = "Prep Time"
+                        />
+                </div>
+                <div className="resultContainer">
+                    {this.state.data}
+                </div>
             </div>
-
+           
         );
     }
 

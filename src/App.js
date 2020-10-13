@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import Category from './components/searchFiles/Category';
 import Search from "./components/searchFiles/Search.js";
-import Style from "./components/recipeFiles/Recipe.css"
+import "./components/recipeFiles/Recipe.css"
 
 
 
@@ -22,9 +22,7 @@ class App extends Component{ //Fuctional Componenet
   render(){
     return(
       <div className="App">
-        <div><h1>Food Search Engine</h1></div>
         <Search/>
-
       </div>
     );
   }
